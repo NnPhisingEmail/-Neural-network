@@ -1,2 +1,3 @@
 # -Neural-network
- Neural network for detecting phising mails
+We aim to classify between benign and phishing mails using various NLP methods.
+
