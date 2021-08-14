@@ -232,7 +232,7 @@ def recall_m(y_true, y_pred):
     Returns
     -------
     recall : float 32
-        DESCRIPTION.
+        true_positives / (possible_positives + K.epsilon(rounding up some delta))
 
     '''
     global hist_recall
@@ -256,7 +256,7 @@ def precision_m(y_true, y_pred):
     Returns
     -------
     precision : float 32
-        DESCRIPTION.
+        true_positives / (predicted_positives + K.epsilon(rounding up some delta)).
 
     '''
     global hist_precision
