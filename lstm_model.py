@@ -4,6 +4,17 @@ Created on Thu Aug  5 20:05:31 2021
 
 @author: Peleg
 """
+
+
+#########################################
+#               TO-DO                 #
+#########################################
+
+#from nltk.corpus import stopwords
+#from nltk import word_tokenize
+#STOPWORDS = set(stopwords.words('english'))
+
+
 #########################################
 #               Imports                 #
 #########################################
@@ -130,9 +141,6 @@ The API allows you to specify which metric to monitor, such as loss or accuracy 
 #################################################
 '''
 from keras.callbacks import EarlyStopping,ModelCheckpoint
-#from nltk.corpus import stopwords
-#from nltk import word_tokenize
-#STOPWORDS = set(stopwords.words('english'))
 
 '''
 Cufflinks is another library that connects the Pandas data frame with Plotly enabling users to create visualizations directly from Pandas.
