@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Aug  5 20:05:31 2021
-
 @author: Peleg
 """
 
@@ -19,7 +18,6 @@ Created on Thu Aug  5 20:05:31 2021
 #               Imports                 #
 #########################################
 '''
-
 '''
 import lstm_parameters as param
 
@@ -69,40 +67,31 @@ from keras.models import Sequential
 '''
 Layers are the basic building blocks of neural networks in Keras.
 A layer consists of a tensor-in tensor-out computation function (the layer's call method) and some state, held in TensorFlow variables (the layer's weights).
-
 Core layers used: Dense layer, Embedding layer.
 #################################################
 #               Dense Layer                     #
 #################################################
 link: https://keras.io/api/layers/core_layers/dense/
-
 The dense layer is a neural network layer that is connected deeply, which means each neuron in the dense layer receives input from all neurons of its previous layer. 
 The dense layer is found to be the most commonly used layer in the models. ... Thus, dense layer is basically used for changing the dimensions of the vector.
-
 #################################################
 #               Embedding Layer                 #
 #################################################
 link: https://keras.io/api/layers/core_layers/embedding/
 The Embedding layer is defined as the first hidden layer of a network. ... input_length: This is the length of input sequences, 
 as you would define for any input layer of a Keras model. For example, if all of your input documents are comprised of 1000 words, this would be 1000.
-
-
 #################################################
 #Recurrent layer: Lstm - long short term memory #
 #################################################
 link: https://keras.io/api/layers/recurrent_layers/lstm/
-
 Long Short-Term Memory (LSTM) networks are a type of recurrent neural network capable of learning order dependence in sequence prediction problems. 
 This is a behavior required in complex problem domains like machine translation, speech recognition, and more. 
 LSTMs are a complex area of deep learning.
-
 #################################################
 #   Regularization layers: SpatialDropout1D     #
 #################################################
 link: https://keras.io/api/layers/regularization_layers/spatial_dropout1d/
-
 Spatial 1D version of Dropout.
-
 This version performs the same function as Dropout, however, it drops entire 1D feature maps instead of individual elements.
 If adjacent frames within feature maps are strongly correlated (as is normally the case in early convolution layers) then
 regular dropout will not regularize the activations and will otherwise just result in an effective learning rate decrease.
@@ -127,14 +116,11 @@ from sklearn.model_selection import train_test_split
 #               keras.callbacks                 #
 #################################################
 EarlyStopping:
-
 Keras supports the early stopping of training via a callback called EarlyStopping.
 This callback allows you to specify the performance measure to monitor, the trigger, and once triggered, it will stop the training process.
 The EarlyStopping callback is configured when instantiated via arguments.
-
 #################################################
 ModelCheckpoint:
-
 The ModelCheckpoint callback class allows you to define where to checkpoint the model weights, 
 how the file should named and under what circumstances to make a checkpoint of the model.
 The API allows you to specify which metric to monitor, such as loss or accuracy on the training or validation dataset.
@@ -164,7 +150,6 @@ cufflinks.set_config_file(world_readable=True, theme='pearl')
 #################################################
 sklearn.metrics.confusion_matrix(y_true, y_pred, labels=None)[source] Compute confusion matrix to evaluate the accuracy of a classification. 
 By definition a confusion matrix is such that is equal to the number of observations known to be in group but predicted to be in group .
-
 #################################################
 #             ConfusionMatrixDisplay            #
 #################################################
@@ -236,6 +221,20 @@ model_checkpoint_callback = ModelCheckpoint(
 #             Functions                 #
 #########################################
 def recall_m(y_true, y_pred):
+    '''
+    Parameters
+    ----------
+    y_true : float 32.
+        holds tensor of training labels.
+    y_pred : float 32
+        holds the predicted labels.
+
+    Returns
+    -------
+    recall : float 32
+        DESCRIPTION.
+
+    '''
     global hist_recall
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
@@ -244,6 +243,22 @@ def recall_m(y_true, y_pred):
     return recall
 
 def precision_m(y_true, y_pred):
+    '''
+    
+
+    Parameters
+    ----------
+    y_true : float 32
+        holds tensor of training labels.
+    y_pred : float 32
+        holds the predicted labels.
+
+    Returns
+    -------
+    precision : float 32
+        DESCRIPTION.
+
+    '''
     global hist_precision
     true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
     predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
@@ -252,6 +267,22 @@ def precision_m(y_true, y_pred):
     return precision
 
 def f1_m(y_true, y_pred):
+    '''
+    
+
+    Parameters
+    ----------
+    y_true : float 32
+        holds tensor of training labels.
+    y_pred : float 32
+        holds the predicted labels.
+
+    Returns
+    -------
+    f1 : float 32
+        (2*reacall*precision)/(recall + precision + K.epsilon(rounding up some delta)).
+
+    '''
     global hist_f1
     precision = precision_m(y_true, y_pred)
     recall = recall_m(y_true, y_pred)
