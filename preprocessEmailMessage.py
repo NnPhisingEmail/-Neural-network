@@ -104,7 +104,10 @@ def clean_text(text):
 
 
 
+'''
+run example from this script bellow:
 
 print('Input Email Text:\n',email_test)
 email_test = clean_text(email_test)
 print('\nOutput Email Text:\n',email_test)
+'''
