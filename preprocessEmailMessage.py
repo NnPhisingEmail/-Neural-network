@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
-
 Author: Amir Hoshen 
-
 this file is set to preprocess emails message content in order to
 transform the data onto GUI for a predictive machine learning model.
-
 """
 
 
 import string
 import re
-
+import email
+from email.message import EmailMessage
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import nltk
+import html2text
+from bs4 import BeautifulSoup
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -28,17 +28,14 @@ email_test = 'the, is, are \t\d\d\d\d\d\d\d \d \\ \<<link>><<link>><<link>>\ndea
 def remove_punct(text):
   '''
     
-
     Parameters
     ----------
     text : string
         Taking the Email body message and removing punctuation from it.
-
     Returns
     -------
     text_nopunct : string
         no punctuation string.
-
     '''
   text_nopunct =''
   text_nopunct = re.sub('['+string.punctuation+']', ' ' ,text)
@@ -51,17 +48,14 @@ def remove_punct(text):
 def removeStopWords(tokens):
     '''
     
-
     Parameters
     ----------
     tokens : string
         text to iterate over while removing all stopwords.
-
     Returns
     -------
     string
         list of fixed tex with no stopWords.
-
     '''
     text_tokens = word_tokenize(tokens)
     tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()]
@@ -81,19 +75,18 @@ def clean_text(text):
     text : is a simple String object.
         Method gets a string of an Email body message preprocess the message and get it ready for machine learning
         model, main usage for this function is for GUI message upload.
-
     Returns
     -------
     String ready for model prediction .
-
     '''
     print('clean_text started')
     if(text != "" and text != " "):
-        print('Inside if')
         p = re.compile('(\n| x|[\t]*|<<link>>|a0|\\\\d+|\\\\)')
         
         fixed_text = text
         fixed_text.lower()
+        fixed_text = re.sub(r"[^a-zA-Z0-9 ]", "",fixed_text)
+        fixed_text = re.sub(" +", " ", fixed_text.lstrip().rstrip())
         fixed_text = p.sub('', fixed_text, count=0)
         fixed_text = remove_punct(fixed_text)
         fixed_text = removeStopWords(fixed_text)
@@ -103,10 +96,31 @@ def clean_text(text):
         return text
 
 
+def get_content(file):# MIME style Content Exctraction
+    data = file.read()
+    if bool(BeautifulSoup(data, "html.parser").find()):
+        htmlText = html2text.html2text(data)
+        data = htmlText
+    b = email.message_from_string(data)
+    body = ""
 
+    if b.is_multipart():
+        for part in b.walk():
+            ctype = part.get_content_type()
+            cdispo = str(part.get('Content-Disposition'))
+
+            # skip any text/plain (txt) attachments
+            if ctype == 'text/plain' and 'attachment' not in cdispo:
+                body = part.get_payload(decode=True)  # decode
+                break
+            # not multipart - i.e. plain text, no attachments, keeping fingers crossed
+    else:
+        body = b.get_payload(decode=True)
+    text = str(body)# content to string 
+    print(text)
+    return text
 '''
 run example from this script bellow:
-
 print('Input Email Text:\n',email_test)
 email_test = clean_text(email_test)
 print('\nOutput Email Text:\n',email_test)
