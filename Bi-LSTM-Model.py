@@ -24,9 +24,6 @@ from keras.models import Sequential
 from keras.layers import Dense, Embedding, LSTM, SpatialDropout1D,Bidirectional,TimeDistributed,GlobalMaxPool1D
 from sklearn.model_selection import train_test_split
 from keras.callbacks import EarlyStopping,ModelCheckpoint
-#from nltk.corpus import stopwords
-#from nltk import word_tokenize
-#STOPWORDS = set(stopwords.words('english'))
 import cufflinks
 from IPython.core.interactiveshell import InteractiveShell
 InteractiveShell.ast_node_interactivity = 'all'
@@ -117,15 +114,9 @@ model.add(Embedding(param.MAX_NB_WORDS, param.EMBEDDING_DIM, input_length=max_se
 # Adding an array Dropout for dropping full vector 
 model.add(SpatialDropout1D(param.SpatialDropout1D))
 
-# Adding layer of lstm as hidden layer
+# Adding layer of Bi-Lstm as hidden layer
 model.add(Bidirectional(LSTM(param.neurons, dropout=param.dropout, recurrent_dropout=param.recurrent_dropout,name='Bi-LSTM-1',return_sequences=True))) #input_shape=X
 model.add(GlobalMaxPool1D())
-#model.add(LSTM(param.neurons, dropout=param.dropout, recurrent_dropout=param.recurrent_dropout,return_sequences=True,name='LSTM-1')) #input_shape=X
-# Adding muliple layers to get deep learning
-#for i in range(2,20):
-#    model.add(LSTM(param.neurons,return_sequences=True,name='LSTM-{}'.format(i)))
-# Adding another hidden layer
-#model.add(LSTM(param.neurons,name='LSTM-20'))
 # DenseLayer with 4 nodes for each class (256= 4*4*4*4)
 model.add(Dense(256, activation='relu',name='Hidden-layer-2'))
 # Dense Layer with the number of classes we difined to get
