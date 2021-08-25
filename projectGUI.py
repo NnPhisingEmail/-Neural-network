@@ -90,23 +90,32 @@ accr= model.evaluate(X_test,Y_test)
 
 
 filePath = ''
-textbox1 = Entry(window, width=50, bg='white', fg='black', font=(myFont, 25))
+textbox1 = Entry(window, width=50, bg='white', fg='black', font=(myFont, 25), x=5)
 textbox1.place(x=10, y=10)
-textbox1.pack(padx=10, pady=10)
+textbox1.pack(padx=5, pady=5)
 bColor = 'gold'
+
+
 def myDelete():
     global filePath, pre_ans_label,pred_visual_label
+    
     filePath = ''
     pre_ans_label.destroy()
     pred_visual_label.destroy()
     textbox1.delete(0, END)
     file_button.configure(fg='gold')
     
+    file_button['state'] = NORMAL
     button_submit['state'] = NORMAL
+    button_clear['state'] = NORMAL
+  
     
+  
 def get_file_path():
     global bColor
     global filePath
+    
+    textbox1.delete(0,END)
     bColor = 'gold'
     filetypes = (
         ('text files', '*.txt'),
@@ -132,10 +141,13 @@ def get_file_path():
         
     return filename
 
+
+
 def button_command():
     global pre_ans_label,pred_visual_label
     global filePath
     
+    file_button['state'] = DISABLED
     button_clear['state'] = NORMAL
     
     _fg ='green2'
@@ -237,7 +249,7 @@ def button_command():
     pre_ans_label = Label(window, text=txt, bg='DeepSkyBlue4', fg= _fg, font=(myFont, 18))
     pred_visual_label = Label(window, text=pred_txt, bg='DeepSkyBlue4', fg=_fg_sec, font=(myFont, 18))
     
-    textbox1.delete(0,'end')
+    #textbox1.delete(0,'end')
     
     pre_ans_label.pack(pady=10)
     pred_visual_label.pack(pady=20)
@@ -245,12 +257,12 @@ def button_command():
     button_submit['state'] = DISABLED
 
 file_button = Button(window, text='Choose File',command=get_file_path, bg='seashell4', fg=bColor, font=(myFont, 20))
-file_button.place(x=30,y=30)
-file_button.pack()
+file_button.place(x=0,y=0)
+file_button.pack(padx=10, pady=5)
 
 button_submit = Button(window, text='Submit',command=button_command, bg='seashell4', fg='gold', font=(myFont, 20))
-button_submit.place(x=10,y=30)
-button_submit.pack()
+button_submit.place(x=0,y=0)
+button_submit.pack(padx=0, pady=10)
 
 button_clear = Button(window, text="Clear view", command=myDelete, bg='seashell4', fg='gold', font=(myFont, 14))
 button_clear.place(x=20, y=20)
