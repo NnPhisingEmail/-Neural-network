@@ -39,7 +39,7 @@ window = Tk()
 #GUI window size
 window.title("Phishing Email Detection")
 
-window.geometry("800x500+150+150")
+window.geometry("800x625+150+150")
 
 #window background color
 window.configure(background="DeepSkyBlue4")
@@ -51,7 +51,6 @@ myFont = font.Font(family='Helvetica', weight='bold')
 label1 = Label(window, text='Сopy & past e-mail message',bg='DeepSkyBlue4', fg='gold', font=(myFont, 18))
 label1.pack(padx=0, pady=0, side=tk.TOP)
 
-data = StringVar()
 
 hist_recall = []
 hist_precision = []
@@ -91,14 +90,16 @@ accr= model.evaluate(X_test,Y_test)
 
 
 filePath = ''
-textbox1 = Entry(window, width=50, bg='white', fg='royal blue', font=(myFont, 25))
+textbox1 = Entry(window, width=50, bg='white', fg='black', font=(myFont, 25))
 textbox1.place(x=10, y=10)
 textbox1.pack(padx=10, pady=10)
 bColor = 'gold'
 def myDelete():
-    global filePath
+    global filePath, pre_ans_label,pred_visual_label
     filePath = ''
     pre_ans_label.destroy()
+    pred_visual_label.destroy()
+    textbox1.delete(0, END)
     file_button.configure(fg='gold')
     
     button_submit['state'] = NORMAL
@@ -122,39 +123,53 @@ def get_file_path():
     else:
         bColor = 'green2'
         filePath = filename
+        with open(filePath,'r',encoding='utf8') as f:
+            content = get_content(f)
+            content = clean_text(content)
+            textbox1.insert(0,content)
     file_button.configure(fg=bColor)
+    button_clear['state'] = DISABLED
         
     return filename
 
 def button_command():
-    global pre_ans_label
+    global pre_ans_label,pred_visual_label
     global filePath
     
+    button_clear['state'] = NORMAL
+    
     _fg ='green2'
+    _fg_sec = 'gold'
     txt = "no text"
     email_content = textbox1.get()
     #TO-DO integrate text onto the predictive model  and return answers and statistic information.
     
     #if messsage input is empty labled it onto th GUI.
     if len(email_content)==0 and len(filePath)==0:
+        _fg = 'red'
+        _fg_sec = 'red'
         txt = "No e-mail inserted!! try again.."
+        pred_txt=''
     elif len(filePath) != 0 and len(email_content) == 0:
+        _fg_sec = 'gold'
         word_to_predict = []
         with open(filePath,'r',encoding='utf8') as f:
             content = get_content(f)
             print(content)
             clean_content = clean_text(content)
-            print(clean_content)
             word_to_predict.append(clean_content)
             seq = tokenizer.texts_to_sequences(word_to_predict)
             padded = pad_sequences(seq, maxlen=maxlen)
             pred = model.predict(padded)
-            txt = str(df_label_count_sorted[np.argmax(pred)]) + str('\n{:0.3f}%\n\nPrediction Table:\nFraud:{:0.3f}%\tNoraml:{:0.3f}%\tPhish:{:0.3f}%\tSpam:{:0.3f}%'.format(pred[0][np.argmax(pred)]*100,
-                                                                pred[0][0]*100,
+            txt = '\n'+ str(df_label_count_sorted[np.argmax(pred)]) + str('\n\n{:0.3f}%'.format(pred[0][np.argmax(pred)]*100))
+
+            pred_txt = str('\nPrediction Table:\n\nFraud:{:0.3f}%\tNoraml:{:0.3f}%\tPhish:{:0.3f}%\tSpam:{:0.3f}%'.format(pred[0][0]*100,
                                                                 pred[0][1]*100,
                                                                 pred[0][2]*100,
                                                                 pred[0][3]*100))
+
             ans =  str(df_label_count_sorted[np.argmax(pred)])
+            
             print(txt, '{:0.3f}%'.format(float(pred[0][np.argmax(pred)])*100))
             print(email_content)
             
@@ -167,20 +182,22 @@ def button_command():
             else:
                 _fg ='white'
     elif len(email_content) != 0 and len(filePath)==0 :
+        _fg_sec = 'gold'
         word_to_predict = []
-        email_content = clean_text(email_content)
-        word_to_predict.append(email_content)
+        clean_content = clean_text(email_content)
+        word_to_predict.append(clean_content)
         seq = tokenizer.texts_to_sequences(word_to_predict)
         padded = pad_sequences(seq, maxlen=maxlen)
         pred = model.predict(padded)
-        txt = str(df_label_count_sorted[np.argmax(pred)]) + str('\n{:0.3f}%\n\nPrediction Table:\nFraud:{:0.3f}%\tNoraml:{:0.3f}%\tPhish:{:0.3f}%\tSpam:{:0.3f}%'.format(pred[0][np.argmax(pred)]*100,
-                                                                pred[0][0]*100,
+        txt = '\n'+ str(df_label_count_sorted[np.argmax(pred)]) + str('\n\n{:0.3f}%'.format(pred[0][np.argmax(pred)]*100))
+        pred_txt = str('\nPrediction Table:\n\nFraud:{:0.3f}%\tNoraml:{:0.3f}%\tPhish:{:0.3f}%\tSpam:{:0.3f}%'.format(pred[0][0]*100,
                                                                 pred[0][1]*100,
                                                                 pred[0][2]*100,
                                                                 pred[0][3]*100))
+        
         ans =  str(df_label_count_sorted[np.argmax(pred)])
         print(txt, '{:0.3f}%'.format(float(pred[0][np.argmax(pred)])*100))
-        print(email_content)
+        print(clean_content)
        
         if ans == 'NORMAL':
             _fg ='green2'
@@ -191,12 +208,39 @@ def button_command():
         else:
             _fg ='white'
     else:
-        txt = 'Two Options In Use Please Press On "Clear View" and Try Again'
+        word_to_predict = []
+        email_content = textbox1.get()
+        clean_content = clean_text(email_content)
+        word_to_predict.append(clean_content)
+        seq = tokenizer.texts_to_sequences(word_to_predict)
+        padded = pad_sequences(seq, maxlen=maxlen)
+        pred = model.predict(padded)
+        txt = '\n'+ str(df_label_count_sorted[np.argmax(pred)]) + str('\n\n{:0.3f}%'.format(pred[0][np.argmax(pred)]*100))
+        pred_txt = str('\nPrediction Table:\n\nFraud:{:0.3f}%\tNoraml:{:0.3f}%\tPhish:{:0.3f}%\tSpam:{:0.3f}%'.format(pred[0][0]*100,
+                                                                pred[0][1]*100,
+                                                                pred[0][2]*100,
+                                                                pred[0][3]*100))
+        
+        ans =  str(df_label_count_sorted[np.argmax(pred)])
+        print(txt, '{:0.3f}%'.format(float(pred[0][np.argmax(pred)])*100))
+        print(clean_content)
+       
+        if ans == 'NORMAL':
+            _fg ='green2'
+        elif ans == 'FRAUD':
+            _fg ='orange'
+        elif ans == 'PHISH':
+            _fg ='red'
+        else:
+            _fg ='white'
+            
     pre_ans_label = Label(window, text=txt, bg='DeepSkyBlue4', fg= _fg, font=(myFont, 18))
+    pred_visual_label = Label(window, text=pred_txt, bg='DeepSkyBlue4', fg=_fg_sec, font=(myFont, 18))
     
     textbox1.delete(0,'end')
     #ans_label = Label(window, text=ans , bg='gold', fg='black', font=(myFont, 14))
     pre_ans_label.pack(pady=10)
+    pred_visual_label.pack(pady=20)
     #ans_label.pack(pady=30)
     button_submit['state'] = DISABLED
 
