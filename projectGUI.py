@@ -238,10 +238,10 @@ def button_command():
     pred_visual_label = Label(window, text=pred_txt, bg='DeepSkyBlue4', fg=_fg_sec, font=(myFont, 18))
     
     textbox1.delete(0,'end')
-    #ans_label = Label(window, text=ans , bg='gold', fg='black', font=(myFont, 14))
+    
     pre_ans_label.pack(pady=10)
     pred_visual_label.pack(pady=20)
-    #ans_label.pack(pady=30)
+    
     button_submit['state'] = DISABLED
 
 file_button = Button(window, text='Choose File',command=get_file_path, bg='seashell4', fg=bColor, font=(myFont, 20))
