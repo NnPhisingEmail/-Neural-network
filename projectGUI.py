@@ -1,9 +1,7 @@
 # -- coding: utf-8 --
 """
 Created on Sun Aug 15 23:29:06 2021
-
 @author: Amir Hoshen
-
 GUI Aplication for model predictions
 """
 try:
@@ -42,13 +40,13 @@ window.title("Phishing Email Detection")
 window.geometry("800x625+150+150")
 
 #window background color
-window.configure(background="DeepSkyBlue4")
+window.configure(background="cornsilk2")
 
 #create Font object
 myFont = font.Font(family='Helvetica', weight='bold')
 
 #Email message instruction label
-label1 = Label(window, text='Сopy & past e-mail message',bg='DeepSkyBlue4', fg='gold', font=(myFont, 18))
+label1 = Label(window, text='Сopy & past e-mail message here:',bg='cornsilk2', fg='black', font=(myFont, 18))
 label1.pack(padx=0, pady=0, side=tk.TOP)
 
 
@@ -94,6 +92,11 @@ textbox1 = Entry(window, width=50, bg='white', fg='black', font=(myFont, 25), x=
 textbox1.place(x=10, y=10)
 textbox1.pack(padx=5, pady=5)
 bColor = 'gold'
+
+pre_ans_label = Label(window, text='Phishing Email Detection', bg='cornsilk2', fg= 'black', font=(myFont, 18))
+pred_visual_label = Label(window, text='Please enter the email as a file/plain text copy.', bg='cornsilk2', fg='black', font=(myFont, 18))
+pre_ans_label.pack(pady=0)
+pred_visual_label.pack(pady=10)
 
 
 def myDelete():
@@ -151,7 +154,7 @@ def button_command():
     button_clear['state'] = NORMAL
     
     _fg ='green2'
-    _fg_sec = 'gold'
+    _fg_sec = 'black'
     txt = "no text"
     email_content = textbox1.get()
     #TO-DO integrate text onto the predictive model  and return answers and statistic information.
@@ -163,7 +166,7 @@ def button_command():
         txt = "No e-mail inserted!! try again.."
         pred_txt=''
     elif len(filePath) != 0 and len(email_content) == 0:
-        _fg_sec = 'gold'
+        _fg_sec = 'black'
         word_to_predict = []
         with open(filePath,'r',encoding='utf8') as f:
             content = get_content(f)
@@ -194,7 +197,7 @@ def button_command():
             else:
                 _fg ='white'
     elif len(email_content) != 0 and len(filePath)==0 :
-        _fg_sec = 'gold'
+        _fg_sec = 'black'
         word_to_predict = []
         clean_content = clean_text(email_content)
         word_to_predict.append(clean_content)
@@ -246,21 +249,21 @@ def button_command():
         else:
             _fg ='white'
             
-    pre_ans_label = Label(window, text=txt, bg='DeepSkyBlue4', fg= _fg, font=(myFont, 18))
-    pred_visual_label = Label(window, text=pred_txt, bg='DeepSkyBlue4', fg=_fg_sec, font=(myFont, 18))
+    pre_ans_label = Label(window, text=txt, bg='cornsilk2', fg= _fg, font=(myFont, 18))
+    pred_visual_label = Label(window, text=pred_txt, bg='cornsilk2', fg=_fg_sec, font=(myFont, 18))
     
     #textbox1.delete(0,'end')
     
-    pre_ans_label.pack(pady=10)
-    pred_visual_label.pack(pady=20)
+    pre_ans_label.pack(pady=0)
+    pred_visual_label.pack(pady=5)
     
     button_submit['state'] = DISABLED
 
-file_button = Button(window, text='Choose File',command=get_file_path, bg='seashell4', fg=bColor, font=(myFont, 20))
+file_button = Button(window, text='Choose File',command=get_file_path, bg='seashell4', fg=bColor, font=(myFont, 14))
 file_button.place(x=0,y=0)
 file_button.pack(padx=10, pady=5)
 
-button_submit = Button(window, text='Submit',command=button_command, bg='seashell4', fg='gold', font=(myFont, 20))
+button_submit = Button(window, text='Submit',command=button_command, bg='seashell4', fg='gold', font=(myFont, 14))
 button_submit.place(x=0,y=0)
 button_submit.pack(padx=0, pady=10)
 
