@@ -10,3 +10,15 @@ git clone https://github.com/NnPhisingEmail/Neural-network.git
 cd Neural-network
 /python3 projectGUI.py
 ```
+## instruction
+
+# donwload email
+  1. follow this guide https://support.google.com/mail/answer/9261412?hl=en in order to download an email
+  2. in the graphical user interface(GUI) press upload and select the downloaded email
+  3. when the message is shown in the text box press submit
+  4. wait for the predction
+
+# text-box
+  
+  1. copy and past the text into the text box and press submit
+  2. wait for the predction to be shown
